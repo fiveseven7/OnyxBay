@@ -160,3 +160,10 @@
 	req_tech = list(TECH_BIO = 3, TECH_DATA = 3)
 	build_path = /obj/item/weapon/circuitboard/replicator
 	sort_string = "WAAAR"
+
+/datum/design/circuit/cryo_cell
+	name = "cryo cell"
+	id = "cryocell"
+	req_tech = list(TECH_BIO = 5, TECH_ENGINEERING = 3, TECH_MATERIAL = 3, TECH_MAGNET = 2)
+	build_path = /obj/item/weapon/circuitboard/cryo_cell
+	sort_string = "WAAAD"

@@ -30,6 +30,21 @@
 	update_icon()
 	initialize_directions = dir
 
+/obj/machinery/atmospherics/unary/cryo_cell/Initialize()
+	. = ..()
+	// kostyl, please help, i'm sick :(
+	component_parts = list(
+		new /obj/item/weapon/circuitboard/cryo_cell(src),
+		new /obj/item/weapon/stock_parts/scanning_module(src),
+		new /obj/item/weapon/stock_parts/manipulator(src),
+		new /obj/item/weapon/stock_parts/manipulator(src),
+		new /obj/item/weapon/stock_parts/capacitor(src),
+		new /obj/item/weapon/stock_parts/capacitor(src),
+		new /obj/item/weapon/stock_parts/capacitor(src),
+		new /obj/item/weapon/stock_parts/console_screen(src),
+		)
+	RefreshParts()
+
 /obj/machinery/atmospherics/unary/cryo_cell/Destroy()
 	var/turf/T = loc
 	T.contents += contents
@@ -183,6 +198,13 @@
 
 
 /obj/machinery/atmospherics/unary/cryo_cell/attackby(obj/G, mob/user as mob)
+	if(default_deconstruction_screwdriver(user, G))
+		return
+	if(default_deconstruction_crowbar(user, G))
+		return
+	if(default_part_replacement(user, G))
+		return
+
 	if(istype(G, /obj/item/weapon/reagent_containers/glass))
 		if(beaker)
 			to_chat(user, "<span class='warning'>A beaker is already loaded into the machine.</span>")
