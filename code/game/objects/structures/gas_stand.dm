@@ -105,7 +105,7 @@
 				breather.internal = tank
 				if(breather.internals)
 					breather.internals.icon_state = "internal1"
-			valve_opened = TRUE	
+			valve_opened = TRUE
 			playsound(get_turf(src), 'sound/effects/internals.ogg', 100, 1)
 			update_icon()
 			START_PROCESSING(SSobj,src)
@@ -229,9 +229,46 @@
 
 /obj/structure/gas_stand/anesthetic
 	icon_state = "gas_stand_idle"
-	name = "anaesthetic machine"
-	desc = "Anaesthetic machine used to support the administration of anaesthesia ."
+	name = "Anesthetic machine"
+	desc = "Anesthetic hetic machine used to support the administration of anaesthesia. "
 	spawn_type = /obj/item/weapon/tank/anesthetic
 	mask_type = /obj/item/clothing/mask/breath/anesthetic
 	is_loosen = FALSE
 
+// build obj for gas_stand/anesthetic
+/obj/structure/gas_stand_build
+	name = "Anesthetic assembly"
+	desc = "Assembly for anesthetic machine used to support the administration of anaesthesia or something like that."
+	icon = 'icons/obj/gas_stand.dmi'
+	var/state = 1
+	icon_state = "gas_stand_build_1"
+
+/obj/structure/gas_stand_build/attackby(obj/item/W as obj, mob/user as mob)
+	if((state == 1) && istype(W, /obj/item/stack/material/steel))
+		var/obj/item/stack/material/steel/mat = W
+		if(mat.use(3))
+			state += 1
+			user.visible_message("[user] adds the steel carrier to assembly", "You add the steel carrier to assembly")
+	if((state == 2) && isWelder(W))
+		var/obj/item/weapon/weldingtool/WT = W
+		if (WT.remove_fuel(0, user))
+			user.visible_message("[user] start welding the steel carrier to assembly", "You start welding the steel carrier to assembly")
+			playsound(src.loc, 'sound/items/Welder2.ogg', 50, 1)
+			if(do_after(user, 20, src) && state == 2)
+				icon_state = "gas_stand_build_2"
+				update_icon()
+				state += 1
+				user.visible_message("[user] welds the steel carrier to assembly", "You weld the steel carrier to assembly")
+	if((state == 3) && isCoil(W))
+		var/obj/item/stack/cable_coil/C = W
+		if (C.get_amount() < 3)
+			to_chat(user, SPAN_WARNING("You need three length of coil to wire inspirator on anaesthetic machine."))
+			return
+		user.visible_message("[user] starts to wire inspirator on the anaesthetic machine.", "You start to wire inspirator on the anaesthetic machine.")
+		if(do_after(user, 40, src) && state == 3)
+			if (C.use(3))
+				to_chat(user, SPAN_NOTICE("You made inspirator on anaesthetic machine."))
+				var/obj/structure/gas_stand/anest = new /obj/structure/gas_stand(get_turf(src))
+				anest.name = "Anesthetic machine"
+				anest.desc = "Anesthetic machine used to support the administration of anaesthesia or something like that. It's looks like an inspirator made of cable, however, this is working."
+				qdel(src)
