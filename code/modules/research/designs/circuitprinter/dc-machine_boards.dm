@@ -167,3 +167,10 @@
 	req_tech = list(TECH_BIO = 5, TECH_ENGINEERING = 3, TECH_MATERIAL = 3, TECH_MAGNET = 2)
 	build_path = /obj/item/weapon/circuitboard/cryo_cell
 	sort_string = "WAAAD"
+
+/datum/design/circuit/exp_b_scanner
+	name = "Experimental Body Scanner"
+	id = "expbodyscanner"
+	req_tech = list(TECH_BIO = 8, TECH_ENGINEERING = 5, TECH_MATERIAL = 6, TECH_MAGNET = 5)
+	build_path = /obj/item/weapon/circuitboard/cryo_cell
+	sort_string = "WAAAE"

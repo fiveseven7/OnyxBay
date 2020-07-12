@@ -598,3 +598,93 @@
 		dat += text("Retinal misalignment detected.")
 
 	. = jointext(dat,"<br>")
+
+/obj/machinery/bodyscanner/experimental
+	name = "Experimental Body Scanner"
+	// UI variables
+	var/hide_status = FALSE
+	var/hide_organs = FALSE
+
+/obj/machinery/bodyscanner/experimental/Initialize()
+	. = ..()
+	component_parts = list(
+		new /obj/item/weapon/circuitboard/exp_b_scanner(src),
+		new /obj/item/weapon/stock_parts/manipulator(src),
+		new /obj/item/weapon/stock_parts/manipulator(src),
+		new /obj/item/weapon/stock_parts/capacitor(src),
+		new /obj/item/weapon/stock_parts/scanning_module(src),
+		new /obj/item/weapon/stock_parts/scanning_module(src),
+		new /obj/item/weapon/stock_parts/scanning_module(src),
+		new /obj/item/weapon/stock_parts/console_screen(src))
+	RefreshParts()
+
+/obj/machinery/bodyscanner/experimental/attackby(obj/item/I, mob/user)
+	if(default_deconstruction_screwdriver(user, I))
+		return
+	if(default_deconstruction_crowbar(user, I))
+		return
+	if(default_part_replacement(user, I))
+		return
+
+/obj/machinery/bodyscanner/experimental/attack_ai(mob/user)
+	src.attack_hand(user)
+
+/obj/machinery/bodyscanner/experimental/attack_hand(mob/user)
+	if(..())
+		return
+	if(stat & (NOPOWER|BROKEN))
+		return
+	if(!ishuman(occupant))
+		to_chat(user, "<span class='warning'>This device can only scan compatible lifeforms.</span>")
+		return
+
+	tg_ui_interact(user)
+//
+/obj/machinery/bodyscanner/experimental/ui_act(action, params)
+	if(..())
+		return TRUE
+
+	if(!src.allowed(usr))
+		return TRUE
+
+	switch (action)
+		if ("print")
+
+			if (!occupant)
+				to_chat(usr, "\icon[src]<span class='warning'>The body scanner is empty.</span>")
+				return TRUE
+
+			if (!istype(occupant,/mob/living/carbon/human))
+				to_chat(usr, "\icon[src]<span class='warning'>The body scanner cannot scan that lifeform.</span>")
+				return TRUE
+
+			new /obj/item/weapon/paper/(loc, "<tt>[occupant.get_medical_data()]</tt>", "Body scan report - [occupant]")
+			return TRUE
+		if ("eject")
+			eject()
+			return TRUE
+		if ("toggle_status")
+			hide_status = !hide_status
+			return TRUE
+		if ("toggle_organs")
+			hide_organs = !hide_organs
+			return TRUE
+
+/obj/machinery/bodyscanner/experimental/ui_data(mob/user)
+	var/list/data = list()
+
+	data["connected"] = src
+	data["medical_data"] = null
+	data["hide_status"] = hide_status
+	data["hide_organs"] = hide_organs
+
+	if (src && occupant)
+		data["medical_data"] = occupant.get_medical_data_ui()
+
+	return data
+
+/obj/machinery/bodyscanner/experimental/tg_ui_interact(mob/user, ui_key = "main", datum/tgui/ui = null, force_open = 0, datum/tgui/master_ui = null, datum/ui_state/state = GLOB.default_state)
+	ui = SStgui.try_update_ui(user, src, ui_key, ui, force_open)
+	if(!ui)
+		ui = new(user, src, ui_key, "body_scanner", name, 500, 700, master_ui, state)
+		ui.open()
