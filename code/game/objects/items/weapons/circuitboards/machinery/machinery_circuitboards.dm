@@ -47,3 +47,15 @@
 							/obj/item/weapon/stock_parts/capacitor = 3,
 							/obj/item/weapon/stock_parts/scanning_module = 1,
 							/obj/item/weapon/stock_parts/console_screen = 1)
+
+/obj/item/weapon/circuitboard/exp_b_scanner
+	name = T_BOARD("Experimental Body Scanner")
+	desc = "The circuitboard for a cryo Experimental Body Scanner"
+	origin_tech = list(TECH_BIO = 7, TECH_ENGINEERING = 5, TECH_MATERIAL = 6, TECH_MAGNET = 5)
+	build_path = /obj/machinery/bodyscanner/experimental
+	board_type = "machine"
+	req_components = list(
+							/obj/item/weapon/stock_parts/manipulator = 2,
+							/obj/item/weapon/stock_parts/capacitor = 1,
+							/obj/item/weapon/stock_parts/scanning_module = 3,
+							/obj/item/weapon/stock_parts/console_screen = 1)
