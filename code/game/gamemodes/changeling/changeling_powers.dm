@@ -485,6 +485,8 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 		status_flags &= ~(FAKEDEATH)
 		// let us move again
 		update_canmove()
+		// re-add changeling powers because somebody have their hands growing out of the place where normal people's hands do not.
+		make_changeling()
 		// sending display messages
 		to_chat(src, SPAN_NOTICE("We have regenerated."))
 		return
